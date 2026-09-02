@@ -59,3 +59,10 @@ def benchmark_threads(
         return resultado
 
 def conta_arqs(folder: str) -> int:
+    from pathlib import Path
+
+    return sum(
+        1
+        for caminho in Path(folder).rglob("*")
+        if caminho.is_file()
+    )

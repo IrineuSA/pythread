@@ -94,3 +94,24 @@ def calcular_performance(
         (vel_atual - vel_anterior)
         / vel_anterior
     ) * 100
+
+def pico_performance(
+    resultados: list[dict]
+) -> tuple[dict, list[dict]]:
+
+    melhor_result = melhor_resultado(resultados)
+
+    menor_result = []
+
+    pico = False
+
+    for resultado in resultados:
+
+        if resultado["threads"] == melhor_result["threads"]:
+            pico = True
+            continue
+
+        if pico:
+            menor_result.append(resultado)
+
+    return melhor_result, menor_result

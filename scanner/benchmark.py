@@ -1,5 +1,6 @@
-import time 
+import time
 from .scanner import busca_pasta
+
 
 def benchmark_threads(
     pasta: str,
@@ -7,19 +8,22 @@ def benchmark_threads(
     termo_busca: str,
     n_threads: list[int]
 ) -> list[dict]:
-        resultado = []
-        for conta_threads in n_threads:
-            print(
-                f"Testando {n_threads} thread(s)..."
+
+    resultado = []
+
+    for conta_threads in n_threads:
+
+        print(
+            f"Testando {conta_threads} thread(s)..."
         )
 
         tempo_inicial = time.perf_counter()
 
         equivalencia = busca_pasta(
             pasta=pasta,
-            tipo_pesq=tipo_busca,
+            tipo_busca=tipo_busca,
             termo_busca=termo_busca,
-            n_threads=n_threads
+            n_threads=conta_threads
         )
 
         tempo_final = time.perf_counter()
@@ -36,7 +40,7 @@ def benchmark_threads(
             arq_p_seg = 0
 
         resultado.append({
-            "threads": n_threads,
+            "threads": conta_threads,
             "tempo": tempo_tot,
             "arquivos escaneados": arq_escaneados,
             "equivalentes": len(equivalencia),
@@ -48,17 +52,18 @@ def benchmark_threads(
         )
 
         print(
-            f"  Arq/seg: "
-            f"{arq_p_seg:.2f}"
+            f"  Arq/seg: {arq_p_seg:.2f}"
         )
 
         print(
             f"  Equivalentes: {len(equivalencia)}"
         )
 
-        return resultado
+    return resultado
+
 
 def conta_arqs(folder: str) -> int:
+
     from pathlib import Path
 
     return sum(
@@ -66,6 +71,7 @@ def conta_arqs(folder: str) -> int:
         for caminho in Path(folder).rglob("*")
         if caminho.is_file()
     )
+
 
 def melhor_resultado(resultados: list[dict]) -> dict:
 
@@ -80,10 +86,12 @@ def melhor_resultado(resultados: list[dict]) -> dict:
         result["arquivos por segundo"]
     )
 
+
 def calcular_performance(
     previous: dict,
     current: dict
 ) -> float:
+
     vel_anterior = previous["arquivos por segundo"]
     vel_atual = current["arquivos por segundo"]
 
@@ -94,6 +102,7 @@ def calcular_performance(
         (vel_atual - vel_anterior)
         / vel_anterior
     ) * 100
+
 
 def pico_performance(
     resultados: list[dict]
@@ -115,4 +124,3 @@ def pico_performance(
             menor_result.append(resultado)
 
     return melhor_result, menor_result
-

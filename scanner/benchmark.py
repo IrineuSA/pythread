@@ -79,3 +79,18 @@ def melhor_resultado(resultados: list[dict]) -> dict:
         key=lambda result:
         result["arquivos por segundo"]
     )
+
+def calcular_performance(
+    previous: dict,
+    current: dict
+) -> float:
+    vel_anterior = previous["arquivos por segundo"]
+    vel_atual = current["arquivos por segundo"]
+
+    if vel_anterior == 0:
+        return 0.0
+
+    return (
+        (vel_atual - vel_anterior)
+        / vel_anterior
+    ) * 100

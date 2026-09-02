@@ -66,3 +66,16 @@ def conta_arqs(folder: str) -> int:
         for caminho in Path(folder).rglob("*")
         if caminho.is_file()
     )
+
+def melhor_resultado(resultados: list[dict]) -> dict:
+
+    if not resultados:
+        raise ValueError(
+            "Nenhum resultado disponivel."
+        )
+
+    return max(
+        resultados,
+        key=lambda result:
+        result["arquivos por segundo"]
+    )

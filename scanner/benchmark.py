@@ -115,3 +115,4 @@ def pico_performance(
             menor_result.append(resultado)
 
     return melhor_result, menor_result
+

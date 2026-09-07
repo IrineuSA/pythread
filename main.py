@@ -3,6 +3,8 @@ from scanner.benchmark import (
     pico_performance
 )
 
+from visualization.charts import gerar_graficos
+
 
 resultados = benchmark_threads(
     pasta=r"G:\Ebooks\GURPS Torrent\GURPS 3E",
@@ -31,4 +33,9 @@ print(
 print(
     f"Pico: "
     f"{melhor['arquivos por segundo']:.2f} arq/seg"
+)
+
+gerar_graficos(
+    resultados,
+    salvar=True
 )

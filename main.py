@@ -1,13 +1,13 @@
 from scanner.benchmark import (
     benchmark_threads,
-    calcular_performance
+    pico_performance
 )
 
 
 resultados = benchmark_threads(
-    pasta="",
-    tipo_busca="",
-    termo_busca="",
+    pasta=r"G:\Ebooks\GURPS Torrent\GURPS 3E",
+    tipo_busca="extension",
+    termo_busca=".pdf",
     n_threads=[
         1,
         2,
@@ -19,16 +19,16 @@ resultados = benchmark_threads(
     ]
 )
 
-analise = calcular_performance(resultados)
+melhor, resultado_pos_pico = pico_performance(resultados)
 
 print("\n========== ANALISE ==========")
 
 print(
     f"Melhor numero de threads: "
-    f"{analise['pico_threads']}"
+    f"{melhor['threads']}"
 )
 
 print(
     f"Pico: "
-    f"{analise['peak_throughput']:.2f} arq/seg"
+    f"{melhor['arquivos por segundo']:.2f} arq/seg"
 )

@@ -1,7 +1,5 @@
 from pathlib import Path
 import tkinter as tk
-from tkinter import filedialog
-from tkinter import messagebox
 from tkinter import ttk
 
 class ScannerApp(tk.Tk):

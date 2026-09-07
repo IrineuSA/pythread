@@ -81,6 +81,67 @@ def grafico_tempo(
         )
     plt.show()
 
+def grafico_performance_relativa(
+    resultados: list[dict],
+    salvar: bool = False,
+    pasta_saida: str = "graficos"
+) -> None:
+    threads = []
+    performance = []
+
+    for i in range(1, len(resultados)):
+
+        anterior = resultados[i - 1]
+        atual = resultados[i]
+
+        vel_anterior = anterior[
+            "arquivos por segundo"
+        ]
+
+        vel_atual = atual[
+            "arquivos por segundo"
+        ]
+
+        if vel_anterior == 0:
+            percentual = 0
+        else:
+            percentual = (
+                (vel_atual - vel_anterior)
+                / vel_anterior
+            ) * 100
+
+        threads.append(
+            atual["threads"]
+        )
+
+        performance.append(
+            percentual
+        )
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(
+        [str(thread) for thread in threads],
+        performance
+    )
+    plt.axhline(
+        y=0,
+        linewidth=1
+    )
+    plt.title(
+        "Variação de Performance entre Threads"
+    )
+    plt.xlabel("Número de Threads")
+    plt.ylabel("Variação de Performance (%)")
+    plt.tight_layout()
+
+    if salvar:
+        _salvar_grafico(
+            pasta_saida,
+            "performance_relativa.png"
+        )
+
+    plt.show()
+
 def _salvar_grafico(
     pasta_saida: str,
     nome_arquivo: str

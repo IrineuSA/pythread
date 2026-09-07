@@ -142,6 +142,34 @@ def grafico_performance_relativa(
 
     plt.show()
 
+def gerar_graficos(
+    resultados: list[dict],
+    salvar: bool = False,
+    pasta_saida: str = "graficos"
+) -> None:
+    if not resultados:
+        raise ValueError(
+            "Nenhum resultado disponivel"
+        )
+
+    gera_grafico(
+        resultados,
+        salvar,
+        pasta_saida
+    )
+
+    grafico_tempo(
+        resultados,
+        salvar,
+        pasta_saida
+    )
+
+    grafico_performance_relativa(
+        resultados,
+        salvar,
+        pasta_saida
+    )
+
 def _salvar_grafico(
     pasta_saida: str,
     nome_arquivo: str

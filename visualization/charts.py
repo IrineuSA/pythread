@@ -1,10 +1,13 @@
 from pathlib import Path
+from datetime import datetime
 import matplotlib.pyplot as plt
+
 
 def gera_grafico(
     resultados: list[dict],
     salvar: bool = False,
-    pasta_saida: str = "resultados"
+    pasta_saida: str = "resultados",
+    run_id: str = ""
 ) -> None:
     threads = [
         resultado["threads"]
@@ -37,15 +40,15 @@ def gera_grafico(
     if salvar:
         _salvar_grafico(
             pasta_saida,
-            "throughput_threads.png"
+            "throughput_threads.png",
+            run_id
         )
-
-    plt.show()
 
 def grafico_tempo(
     resultados: list[dict],
     salvar: bool = False,
-    pasta_saida: str = "graficos"
+    pasta_saida: str = "graficos",
+    run_id: str = ""
 ) -> None:
     threads = [
         resultado["threads"]
@@ -77,14 +80,15 @@ def grafico_tempo(
     if salvar:
         _salvar_grafico(
             pasta_saida,
-            "tempo_threads.png"
+            "tempo_threads.png",
+            run_id
         )
-    plt.show()
 
 def grafico_performance_relativa(
     resultados: list[dict],
     salvar: bool = False,
-    pasta_saida: str = "graficos"
+    pasta_saida: str = "graficos",
+    run_id: str = ""
 ) -> None:
     threads = []
     performance = []
@@ -137,10 +141,13 @@ def grafico_performance_relativa(
     if salvar:
         _salvar_grafico(
             pasta_saida,
-            "performance_relativa.png"
+            "performance_relativa.png",
+            run_id
         )
 
     plt.show()
+
+
 
 def gerar_graficos(
     resultados: list[dict],
@@ -152,27 +159,35 @@ def gerar_graficos(
             "Nenhum resultado disponivel"
         )
 
+    run_id = datetime.now().strftime(
+        "%d-%m-%Y_%H-%M"
+    )
+
     gera_grafico(
         resultados,
         salvar,
-        pasta_saida
+        pasta_saida,
+        run_id
     )
 
     grafico_tempo(
         resultados,
         salvar,
-        pasta_saida
+        pasta_saida,
+        run_id
     )
 
     grafico_performance_relativa(
         resultados,
         salvar,
-        pasta_saida
+        pasta_saida,
+        run_id
     )
 
 def _salvar_grafico(
     pasta_saida: str,
-    nome_arquivo: str
+    nome_arquivo: str,
+    run_id: str
 ) -> None:
     pasta = Path(pasta_saida)
 
@@ -181,7 +196,14 @@ def _salvar_grafico(
         exist_ok=True
     )
 
+    nome = Path(nome_arquivo)
+
+    novo_nome = (
+        f"{nome.stem}_{run_id}"
+        f"{nome.suffix}"
+    )
+
     plt.savefig(
-        pasta / nome_arquivo,
+        pasta / novo_nome,
         dpi=300
     )

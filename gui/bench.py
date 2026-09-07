@@ -56,3 +56,21 @@ class BenchmarkTab(ttk.Frame):
             fill="both",
             expand=True
         )
+
+    def executar(
+        self,
+        config,
+        graph_dir,
+        on_complete=None
+    ):
+
+        thread = threading.Thread(
+            target=self._executar_thread,
+            args=(
+                config,
+                graph_dir,
+                on_complete
+            ),
+            daemon=True
+        )
+        thread.start()

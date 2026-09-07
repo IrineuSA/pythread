@@ -34,5 +34,26 @@ def gera_grafico(
     plt.grid(True)
     plt.tight_layout()
 
+    if salvar:
+        _salvar_grafico(
+            pasta_saida,
+            "throughput_threads.png"
+        )
+
     plt.show()
 
+def _salvar_grafico(
+    pasta_saida: str,
+    nome_arquivo: str
+) -> None:
+    pasta = Path(pasta_saida)
+
+    pasta.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    plt.savefig(
+        pasta / nome_arquivo,
+        dpi=300
+    )

@@ -63,3 +63,30 @@ class ScannerApp(tk.Tk):
         self.status_var = tk.StringVar(
             value="Pronto."
         )
+
+    def _criar_interface(self):
+
+        container = ttk.Frame(
+            self,
+            padding=15
+        )
+
+        container.pack(
+            fill="both",
+            expand=True
+        )
+
+        self._criar_configuracoes(container)
+        self.notebook = ttk.Notebook(container)
+        self.notebook.pack(
+            fill="both",
+            expand=True,
+            pady=(15, 0)
+        )
+
+        self._cria_aba_pesquisa()
+        self._cria_aba_benchmark()
+        self._cria_aba_graficos()
+        self._cria_status(container)
+
+    

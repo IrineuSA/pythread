@@ -43,3 +43,23 @@ class ScannerApp(tk.Tk):
         self._criar_variaveis()
         self._criar_interface()
         self.atualizar_lista_graficos()
+
+    def _criar_variaveis(self):
+
+        self.pasta_var = tk.StringVar(
+        )
+        self.tipo_busca_var = tk.StringVar(
+            value="Extensão"
+        )
+        self.termo_busca_var = tk.StringVar(
+            value=".pdf"
+        )
+        self.threads_busca_var = tk.StringVar(
+            value="8"
+        )
+        self.threads_benchmark_var = tk.StringVar(
+            value="1,2,4,8,16,32,64"
+        )
+        self.status_var = tk.StringVar(
+            value="Pronto."
+        )

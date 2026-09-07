@@ -136,4 +136,57 @@ class ConfigFrame(ttk.LabelFrame):
             pady=10
         )
 
+    def _selecionar_pasta(self):
+        pasta = filedialog.askdirectory()
+
+        if pasta:
+            self.pasta_var.set(pasta)
+
+    def _executar(self):
+        try:
+            config = self._obter_config()
+            self.on_benchmark(config)
+
+        except ValueError as erro:
+            messagebox.showerror(
+                "Erro",
+                str(erro)
+            )
+
+    def _obter_config(self):
+        pasta = Path(
+            self.pasta_var.get().strip()
+        )
+        if not pasta.exists():
+            raise ValueError(
+                "Selecione uma pasta válida."
+            )
+        termo = (
+            self.termo_var.get().strip()
+        )
+        if not termo:
+            raise ValueError(
+                "Informe um termo."
+            )
+        try:
+            threads = [
+                int(valor.strip())
+                for valor
+                in self.threads_var.get().split(",")
+            ]
+        except ValueError:
+            raise ValueError(
+                "Threads devem ser números "
+                "separados por vírgula."
+            )
+
+        return {
+            "pasta": str(pasta),
+            "tipo_busca":
+                self.tipo_map[
+                    self.tipo_var.get()
+                ],
+            "termo_busca": termo,
+            "threads": threads
+        }
     

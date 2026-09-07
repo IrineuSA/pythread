@@ -1,0 +1,38 @@
+from pathlib import Path
+import matplotlib.pyplot as plt
+
+def gera_grafico(
+    resultados: list[dict],
+    salvar: bool = False,
+    pasta_saida: str = "resultados"
+) -> None:
+    threads = [
+        resultado["threads"]
+        for resultado in resultados
+    ]
+
+    throughput = [
+        resultado["arquivos por segundo"]
+        for resultado in resultados
+    ]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(
+        threads,
+        throughput,
+        marker="o"
+    )
+
+    plt.title(
+        "Desempenho / Número de Threads"
+    )
+
+    plt.xlabel("Número de Threads")
+    plt.ylabel("Arquivos por Segundo")
+
+    plt.xticks(threads)
+    plt.grid(True)
+    plt.tight_layout()
+
+    plt.show()
+

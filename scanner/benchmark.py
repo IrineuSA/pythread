@@ -30,7 +30,8 @@ def benchmark_threads(
 
         tempo_tot = tempo_final - tempo_inicial
 
-        arq_escaneados = conta_arqs(pasta)
+        arq_escaneados = equivalencia["arquivos pesquisados"]
+        n_equivalentes = len(equivalencia["matches"])
 
         if tempo_tot > 0:
             arq_p_seg = (
@@ -43,7 +44,7 @@ def benchmark_threads(
             "threads": conta_threads,
             "tempo": tempo_tot,
             "arquivos escaneados": arq_escaneados,
-            "equivalentes": len(equivalencia),
+            "equivalentes": n_equivalentes,
             "arquivos por segundo": arq_p_seg
         })
 
@@ -56,7 +57,7 @@ def benchmark_threads(
         )
 
         print(
-            f"  Equivalentes: {len(equivalencia)}"
+            f"  Equivalentes: {n_equivalentes}"
         )
 
     return resultado

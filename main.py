@@ -3,7 +3,7 @@ from scanner.benchmark import (
     pico_performance
 )
 
-from visualization.charts import gerar_graficos
+from visual.graficos import gerar_graficos
 
 
 resultados = benchmark_threads(

@@ -42,6 +42,45 @@ def gera_grafico(
 
     plt.show()
 
+def grafico_tempo(
+    resultados: list[dict],
+    salvar: bool = False,
+    pasta_saida: str = "graficos"
+) -> None:
+    threads = [
+        resultado["threads"]
+        for resultado in resultados
+    ]
+
+    tempos = [
+        resultado["tempo"]
+        for resultado in resultados
+    ]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(
+        threads,
+        tempos,
+        marker="o"
+    )
+
+    plt.title(
+        "Tempo de Execução / Número de Threads"
+    )
+
+    plt.xlabel("Número de Threads")
+    plt.ylabel("Tempo de Execução (s)")
+    plt.xticks(threads)
+    plt.grid(True)
+    plt.tight_layout()
+
+    if salvar:
+        _salvar_grafico(
+            pasta_saida,
+            "tempo_threads.png"
+        )
+    plt.show()
+
 def _salvar_grafico(
     pasta_saida: str,
     nome_arquivo: str

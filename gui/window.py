@@ -2,6 +2,10 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
 
+from gui.config import ConfigFrame
+from gui.bench import BenchmarkTab
+from gui.graph import GraphsTab
+
 class ScannerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -19,11 +23,30 @@ class ScannerApp(tk.Tk):
             exist_ok=True
         )
 
+        self.config_frame = ConfigFrame(
+            self,
+            on_benchmark=self.executar_benchmark
+        )
+        self.config_frame.pack(
+            fill="x",
+            padx=15,
+            pady=15
+        )
+
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(
             fill="both",
             expand=True,
-            pady=(15, 0)
+            pady=(0, 15)
+        )
+
+        self.benchmark_tab = BenchmarkTab(
+            self.notebook
+        )
+
+        self.graphs_tab = GraphsTab(
+            self.notebook,
+            self.graph_dir
         )
 
         self.notebook.add(

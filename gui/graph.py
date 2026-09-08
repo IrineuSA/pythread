@@ -41,7 +41,6 @@ class GraphsTab(ttk.Frame):
         ).pack(
             side="left"
         )
-
         ttk.Button(
             botoes,
             text="Atualizar",
@@ -50,7 +49,6 @@ class GraphsTab(ttk.Frame):
             side="left",
             padx=5
         )
-
         ttk.Button(
             botoes,
             text="Abrir pasta",
@@ -58,5 +56,21 @@ class GraphsTab(ttk.Frame):
         ).pack(
             side="left"
         )
-
         self.atualizar()
+
+    def atualizar(self):
+        self.lista.delete(
+            0,
+            tk.END
+        )
+        arquivos = sorted(
+            self.graph_dir.glob("*.png"),
+            key=lambda arquivo:
+                arquivo.stat().st_mtime,
+            reverse=True
+        )
+        for arquivo in arquivos:
+            self.lista.insert(
+                tk.END,
+                arquivo.name
+            )

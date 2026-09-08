@@ -131,7 +131,8 @@ class BenchmarkTab(ttk.Frame):
 
             self.tree.tag_configure(
                 "melhor",
-                background="lightgreen"
+                background="lightgreen",
+                font=("TkDefaultFont", 10, "bold")
             )
                 
             for resultado in resultados:

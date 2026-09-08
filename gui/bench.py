@@ -74,3 +74,84 @@ class BenchmarkTab(ttk.Frame):
             daemon=True
         )
         thread.start()
+    
+    def _executar_thread(
+        self,
+        config,
+        graph_dir,
+        on_complete
+    ):
+
+        try:
+            resultados = benchmark_threads(
+                pasta=config["pasta"],
+                tipo_busca=config["tipo_busca"],
+                termo_busca=config["termo_busca"],
+                n_threads=config["threads"]
+            )
+
+            gerar_graficos(
+                resultados,
+                salvar=True,
+                pasta_saida=str(graph_dir),
+            )
+
+            self.after(
+                0,
+                lambda:
+                self._mostrar_resultados(
+                    resultados,
+                    on_complete
+                )
+            )
+
+        except Exception as erro:
+            self.after(
+                0,
+                lambda erro=erro:
+                messagebox.showerror(
+                    "Erro",
+                    str(erro)
+                )
+            )
+
+        def _mostrar_resultados(
+        self,
+        resultados,
+        on_complete
+  ):
+
+            for item in self.tree.get_children():
+                self.tree.delete(item)
+                
+            for resultado in resultados:
+                self.tree.insert(
+                    "",
+                    "end",
+                    values=(
+                        resultado["threads"],
+                        f"{resultado['tempo']:.4f}",
+                        resultado[
+                            "arquivos escaneados"
+                        ],
+                        resultado[
+                            "equivalentes"
+                        ],
+                        f"{resultado['arquivos por segundo']:.2f}"
+                    )
+                )
+
+        melhor = melhor_resultado(
+            resultados
+        )
+        messagebox.showinfo(
+            "Benchmark concluído",
+            (
+                f"Melhor resultado: "
+                f"{melhor['threads']} threads\n"
+                f"{melhor['arquivos por segundo']:.2f} "
+                "arquivos/s"
+            )
+        )
+        if on_complete:
+            on_complete()

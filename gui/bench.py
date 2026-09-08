@@ -94,6 +94,7 @@ class BenchmarkTab(ttk.Frame):
                 resultados,
                 salvar=True,
                 pasta_saida=str(graph_dir),
+                mostrar=False
             )
 
             self.after(
@@ -115,7 +116,7 @@ class BenchmarkTab(ttk.Frame):
                 )
             )
 
-        def _mostrar_resultados(
+    def _mostrar_resultados(
         self,
         resultados,
         on_complete
@@ -141,17 +142,18 @@ class BenchmarkTab(ttk.Frame):
                     )
                 )
 
-        melhor = melhor_resultado(
+            melhor = melhor_resultado(
             resultados
         )
-        messagebox.showinfo(
-            "Benchmark concluído",
-            (
-                f"Melhor resultado: "
-                f"{melhor['threads']} threads\n"
-                f"{melhor['arquivos por segundo']:.2f} "
-                "arquivos/s"
+            messagebox.showinfo(
+                "Benchmark concluído",
+                (
+                    f"Melhor resultado: "
+                    f"{melhor['threads']} threads\n"
+                    f"{melhor['arquivos por segundo']:.2f} "
+                   "arquivos/s"
+                )
             )
-        )
-        if on_complete:
-            on_complete()
+
+            if on_complete:
+                on_complete()

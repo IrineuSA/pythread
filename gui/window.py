@@ -1,11 +1,12 @@
 from pathlib import Path
-import sys
 import tkinter as tk
 from tkinter import ttk
 
 from gui.config import ConfigFrame
 from gui.bench import BenchmarkTab
 from gui.graph import GraphsTab
+
+from gui.utils import obter_diretorio_app
 
 class ScannerApp(tk.Tk):
     def __init__(self):
@@ -14,15 +15,9 @@ class ScannerApp(tk.Tk):
         self.geometry("1000x700")
         self.minsize(850, 600)
         
-    def obter_diretorio_app():
-
-        if getattr(sys, "frozen", False):
-            return Path(sys.executable).resolve().parent
-        return Path(__file__).resolve().parent.parent
-
         self.graph_dir = (
-        obter_diretorio_app()
-        / "graficos"
+            obter_diretorio_app()
+            / "graficos"
         )
 
         self.graph_dir.mkdir(

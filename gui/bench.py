@@ -56,7 +56,43 @@ class BenchmarkTab(ttk.Frame):
             fill="both",
             expand=True
         )
-
+        ttk.Label(
+        self,
+            text="Arquivos Encontrados"
+        ).pack(
+            anchor="w",
+            pady=(10, 5)
+        )
+        self.matches_tree = ttk.Treeview(
+            self,
+            columns=(
+                "nome",
+                "caminho"
+            ),
+        show="headings",
+        height=8
+        )
+        self.matches_tree.heading(
+            "nome",
+            text="Nome"
+        )
+        self.matches_tree.heading(
+            "caminho",
+            text="Caminho"
+        )
+        self.matches_tree.column(
+            "nome",
+            width=250
+        )
+        self.matches_tree.column(
+            "caminho",
+            width=600
+        )
+        self.matches_tree.pack(
+            fill="both",
+            expand=True
+        )
+        
     def executar(
         self,
         config,
@@ -124,11 +160,13 @@ class BenchmarkTab(ttk.Frame):
 
             for item in self.tree.get_children():
                 self.tree.delete(item)
-
+            
+            for item in self.matches_tree.get_children():
+                self.matches_tree.delete(item)                
+            
             melhor = melhor_resultado(
                 resultados
             )
-
             self.tree.tag_configure(
                 "melhor",
                 background="lightgreen",
@@ -158,6 +196,17 @@ class BenchmarkTab(ttk.Frame):
                     tags=tag
                 )
 
+            if resultados:
+                matches = resultados[0]["matches"]
+                for caminho in matches:
+                    self.matches_tree.insert(
+                        "",
+                        "end",
+                        values=(
+                            caminho.name,
+                            str(caminho)
+                        )
+                    )
             melhor = melhor_resultado(
             resultados
         )

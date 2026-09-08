@@ -45,7 +45,8 @@ def benchmark_threads(
             "tempo": tempo_tot,
             "arquivos escaneados": arq_escaneados,
             "equivalentes": n_equivalentes,
-            "arquivos por segundo": arq_p_seg
+            "arquivos por segundo": arq_p_seg,
+            "matches": equivalencia["matches"]
         })
 
         print(

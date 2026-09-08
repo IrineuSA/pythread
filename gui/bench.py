@@ -124,8 +124,22 @@ class BenchmarkTab(ttk.Frame):
 
             for item in self.tree.get_children():
                 self.tree.delete(item)
+
+            melhor = melhor_resultado(
+                resultados
+            )
+
+            self.tree.tag_configure(
+                "melhor",
+                background="lightgreen"
+            )
                 
             for resultado in resultados:
+                tag = ()
+
+                if resultado["threads"] == melhor["threads"]:
+                    tag = ("melhor",)
+
                 self.tree.insert(
                     "",
                     "end",
@@ -139,7 +153,8 @@ class BenchmarkTab(ttk.Frame):
                             "equivalentes"
                         ],
                         f"{resultado['arquivos por segundo']:.2f}"
-                    )
+                    ),
+                    tags=tag
                 )
 
             melhor = melhor_resultado(

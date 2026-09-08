@@ -145,14 +145,11 @@ def grafico_performance_relativa(
             run_id
         )
 
-    plt.show()
-
-
-
 def gerar_graficos(
     resultados: list[dict],
     salvar: bool = False,
-    pasta_saida: str = "graficos"
+    pasta_saida: str = "graficos",
+    mostrar: bool = True
 ) -> None:
     if not resultados:
         raise ValueError(
@@ -183,6 +180,11 @@ def gerar_graficos(
         pasta_saida,
         run_id
     )
+
+    if mostrar:
+        plt.show()
+    else:
+        plt.close("all")
 
 def _salvar_grafico(
     pasta_saida: str,

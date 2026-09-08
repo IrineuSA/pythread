@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 import tkinter as tk
 from tkinter import ttk
 
@@ -13,9 +14,15 @@ class ScannerApp(tk.Tk):
         self.geometry("1000x700")
         self.minsize(850, 600)
         
+    def obter_diretorio_app():
+
+        if getattr(sys, "frozen", False):
+            return Path(sys.executable).resolve().parent
+        return Path(__file__).resolve().parent.parent
+
         self.graph_dir = (
-            Path(__file__).resolve().parent.parent
-            / "graficos"
+        obter_diretorio_app()
+        / "graficos"
         )
 
         self.graph_dir.mkdir(

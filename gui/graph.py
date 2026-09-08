@@ -74,3 +74,37 @@ class GraphsTab(ttk.Frame):
                 tk.END,
                 arquivo.name
             )
+
+    def abrir_selecionado(self):
+        selecao = self.lista.curselection()
+        if not selecao:
+            return
+
+        arquivo = (
+            self.graph_dir
+            / self.lista.get(
+                selecao[0]
+            )
+        )
+        self._abrir(arquivo)
+
+    def abrir_pasta(self):
+        self._abrir(
+            self.graph_dir
+        )
+
+    def _abrir(
+        self,
+        caminho
+    ):
+        if sys.platform.startswith("win"):
+            os.startfile(caminho)
+
+        elif sys.platform == "darwin":
+            subprocess.Popen(
+                ["open", str(caminho)]
+            )
+        else:
+            subprocess.Popen(
+                ["xdg-open", str(caminho)]
+            )

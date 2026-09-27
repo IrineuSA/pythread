@@ -90,19 +90,19 @@ def melhor_resultado(resultados: list[dict]) -> dict:
 
 
 def calcular_performance(
-    previous: dict,
+    base: dict,
     current: dict
 ) -> float:
 
-    vel_anterior = previous["arquivos por segundo"]
-    vel_atual = current["arquivos por segundo"]
+    tempo_base = base["tempo"]
+    tempo_atual = current["tempo"]
 
-    if vel_anterior == 0:
+    if tempo_base == 0:
         return 0.0
 
     return (
-        (vel_atual - vel_anterior)
-        / vel_anterior
+        (tempo_base - tempo_atual)
+        / tempo_base
     ) * 100
 
 

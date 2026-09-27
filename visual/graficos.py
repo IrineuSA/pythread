@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 import matplotlib.pyplot as plt
+from scanner.benchmark import calcular_performance
 
 
 def gera_grafico(
@@ -93,26 +94,18 @@ def grafico_performance_relativa(
     threads = []
     performance = []
 
-    for i in range(1, len(resultados)):
+    base = next(
+        resultado
+        for resultado in resultados
+        if resultado["threads"] == 1
+    )
 
-        anterior = resultados[i - 1]
-        atual = resultados[i]
+    for atual in resultados:
 
-        vel_anterior = anterior[
-            "arquivos por segundo"
-        ]
-
-        vel_atual = atual[
-            "arquivos por segundo"
-        ]
-
-        if vel_anterior == 0:
-            percentual = 0
-        else:
-            percentual = (
-                (vel_atual - vel_anterior)
-                / vel_anterior
-            ) * 100
+        percentual = calcular_performance(
+            base,
+            atual
+        )
 
         threads.append(
             atual["threads"]
@@ -123,19 +116,27 @@ def grafico_performance_relativa(
         )
 
     plt.figure(figsize=(10, 6))
+
     plt.bar(
         [str(thread) for thread in threads],
         performance
     )
+
     plt.axhline(
         y=0,
         linewidth=1
     )
+
     plt.title(
-        "Variação de Performance entre Threads"
+        "Performance em Relação a 1 Thread"
     )
+
     plt.xlabel("Número de Threads")
-    plt.ylabel("Variação de Performance (%)")
+
+    plt.ylabel(
+        "Melhoria em Relação a 1 Thread (%)"
+    )
+
     plt.tight_layout()
 
     if salvar:

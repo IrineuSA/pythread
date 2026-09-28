@@ -11,8 +11,10 @@ def benchmark_threads(
 ) -> list[dict]:
 
     resultado = []
-
-    total_testes = len(n_threads)
+    
+    repeticoes = 10
+    total_testes = len(n_threads)*repeticoes
+    teste_atual=0
 
     if progresso:
         progresso(
@@ -20,56 +22,88 @@ def benchmark_threads(
             "Preparando benchmark..."
         )
 
-    for indice, conta_threads in enumerate(n_threads):
+    for conta_threads in n_threads:
 
-        if progresso:
-            progresso(
-                indice / total_testes,
-                f"Testando {conta_threads} thread(s)..."
+        tempos = []
+        velocidades = []
+
+        equivalencia = None
+
+        for repeticao in range(repeticoes):
+
+            if progresso:
+                progresso(
+                    teste_atual / total_testes,
+                    (
+                        f"Testando {conta_threads} thread(s) "
+                        f"- execução {repeticao + 1}/{repeticoes}..."
+                    )
+                )
+
+            print(
+                f"Testando {conta_threads} thread(s) "
+                f"- execução {repeticao + 1}/{repeticoes}..."
             )
 
-        print(
-            f"Testando {conta_threads} thread(s)..."
-        )
+            tempo_inicial = time.perf_counter()
 
-        tempo_inicial = time.perf_counter()
-
-        equivalencia = busca_pasta(
-            pasta=pasta,
-            tipo_busca=tipo_busca,
-            termo_busca=termo_busca,
-            n_threads=conta_threads
-        )
-
-        tempo_final = time.perf_counter()
-
-        tempo_tot = tempo_final - tempo_inicial
-
-        arq_escaneados = equivalencia["arquivos pesquisados"]
-        n_equivalentes = len(equivalencia["matches"])
-
-        if tempo_tot > 0:
-            arq_p_seg = (
-                arq_escaneados / tempo_tot
+            equivalencia = busca_pasta(
+                pasta=pasta,
+                tipo_busca=tipo_busca,
+                termo_busca=termo_busca,
+                n_threads=conta_threads
             )
-        else:
-            arq_p_seg = 0
+
+            tempo_final = time.perf_counter()
+
+            tempo_tot = tempo_final - tempo_inicial
+
+            arq_escaneados = equivalencia[
+                "arquivos pesquisados"
+            ]
+
+            if tempo_tot > 0:
+                arq_p_seg = (
+                    arq_escaneados / tempo_tot
+                )
+            else:
+                arq_p_seg = 0
+
+            tempos.append(tempo_tot)
+            velocidades.append(arq_p_seg)
+
+            teste_atual += 1
+
+        tempo_medio = sum(tempos) / repeticoes
+
+        velocidade_media = (
+            sum(velocidades) / repeticoes
+        )
+
+        n_equivalentes = len(
+            equivalencia["matches"]
+        )
 
         resultado.append({
             "threads": conta_threads,
-            "tempo": tempo_tot,
+            "tempo": tempo_medio,
             "arquivos escaneados": arq_escaneados,
             "equivalentes": n_equivalentes,
-            "arquivos por segundo": arq_p_seg,
+            "arquivos por segundo": velocidade_media,
             "matches": equivalencia["matches"]
         })
 
         print(
-            f"  Tempo: {tempo_tot:.4f}s"
+            f"\nResultado médio para "
+            f"{conta_threads} thread(s):"
         )
 
         print(
-            f"  Arq/seg: {arq_p_seg:.2f}"
+            f"  Tempo médio: {tempo_medio:.4f}s"
+        )
+
+        print(
+            f"  Arq/seg médio: {velocidade_media:.2f}"
         )
 
         print(

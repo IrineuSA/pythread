@@ -7,9 +7,9 @@ from visual.graficos import gerar_graficos
 
 
 resultados = benchmark_threads(
-    pasta=r"G:\Ebooks\GURPS Torrent\GURPS 3E",
-    tipo_busca="extension",
-    termo_busca=".pdf",
+    pasta=r"",
+    tipo_busca="",
+    termo_busca="",
     n_threads=[
         1,
         2,
@@ -18,7 +18,7 @@ resultados = benchmark_threads(
         16,
         32,
         64
-    ]
+    ],
 )
 
 melhor, resultado_pos_pico = pico_performance(resultados)

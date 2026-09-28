@@ -15,7 +15,56 @@ class BenchmarkTab(ttk.Frame):
             parent,
             padding=10
         )
+        self._criar_progresso()
         self._criar_tabela()
+        
+
+    def _criar_progresso(self):
+        self.status_label = ttk.Label(
+            self,
+            text="Pronto"
+        )
+
+        self.status_label.pack(
+            anchor="w",
+            pady=(0,5)
+        )
+
+        self.progress_bar = ttk.Progressbar(
+            self,
+            orient="horizontal",
+            mode="determinate",
+            maximum=100
+        )
+
+        self.progress_bar.pack(
+            fill="x",
+            pady=(0,10)
+        )
+    
+    def _atualizar_progresso(
+        self,
+        valor,
+        mensagem
+    ):
+        self.after(
+            0,
+            self._aplicar_progresso,
+            valor,
+            mensagem
+        )
+
+    def _aplicar_progresso(
+        self,
+        valor,
+        mensagem
+    ):
+        self.progress_bar["value"]=(
+            valor*100
+        )
+        self.status_label.config(
+            text=mensagem
+        )
 
     def _criar_tabela(self):
 
@@ -123,7 +172,13 @@ class BenchmarkTab(ttk.Frame):
                 pasta=config["pasta"],
                 tipo_busca=config["tipo_busca"],
                 termo_busca=config["termo_busca"],
-                n_threads=config["threads"]
+                n_threads=config["threads"],
+                progresso=self._atualizar_progresso
+            )
+
+            self._atualizar_progresso(
+                1.0,
+                "Gerando gráficos..."
             )
 
             gerar_graficos(
@@ -131,6 +186,11 @@ class BenchmarkTab(ttk.Frame):
                 salvar=True,
                 pasta_saida=str(graph_dir),
                 mostrar=False
+            )
+
+            self._atualizar_progresso(
+                1.0,
+                "Concluído."
             )
 
             self.after(

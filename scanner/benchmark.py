@@ -6,12 +6,27 @@ def benchmark_threads(
     pasta: str,
     tipo_busca: str,
     termo_busca: str,
-    n_threads: list[int]
+    n_threads: list[int],
+    progresso=None
 ) -> list[dict]:
 
     resultado = []
 
-    for conta_threads in n_threads:
+    total_testes = len(n_threads)
+
+    if progresso:
+        progresso(
+            0,
+            "Preparando benchmark..."
+        )
+
+    for indice, conta_threads in enumerate(n_threads):
+
+        if progresso:
+            progresso(
+                indice / total_testes,
+                f"Testando {conta_threads} thread(s)..."
+            )
 
         print(
             f"Testando {conta_threads} thread(s)..."
@@ -59,6 +74,12 @@ def benchmark_threads(
 
         print(
             f"  Equivalentes: {n_equivalentes}"
+        )
+
+    if progresso:
+        progresso(
+            1.0,
+            "Benchmark concluido."
         )
 
     return resultado

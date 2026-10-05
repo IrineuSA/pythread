@@ -2,9 +2,10 @@ import threading
 from .process import Processo, EstadoProcesso
 
 class GerenciadorProcessos:
-    def __init__(self):
+    def __init__(self, callback=None):
         self.processos = []
         self.lock = threading.Lock()
+        self.callback = callback
 
     def adicionar(self, processo: Processo):
         with self.lock:

@@ -142,9 +142,11 @@ class ConfigFrame(ttk.LabelFrame):
             text="Simular Fila de Prontos",
             command=self._executar_simulacao
         )
-        self.simulation_button.pack(
-            side="left",
-            padx=5
+        self.simulation_button.grid(
+            row=5,
+            column=0,
+            columnspan=3,
+            pady=10
         )
 
     def _selecionar_pasta(self):

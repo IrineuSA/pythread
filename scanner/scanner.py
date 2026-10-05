@@ -11,7 +11,8 @@ def busca_pasta(
     pasta: str,
     tipo_busca: str,
     termo_busca: str,
-    n_threads: int
+    n_threads: int,
+    max_io: int = None
 ) -> dict:
     arquivos = [
         caminho
@@ -25,9 +26,12 @@ def busca_pasta(
     gerenciador
     )
     
-    semaforo_io = threading.Semaphore(
-        n_threads
+    if max_io is None:
+        max_io = n_threads
+    semaforo_io =   threading.Semaphore(
+        max_io
     )
+    
 
     for pid, caminho_arq in enumerate(arquivos, start=1):
         processo = Processo(

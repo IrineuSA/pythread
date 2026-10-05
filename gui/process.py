@@ -107,7 +107,7 @@ class ProcessTab(ttk.Frame):
     ):
         self.after(
             0,
-            self._aplica_atualizacao,
+            self._aplicar_atualizacao,
             pid,
             arquivo,
             estado
@@ -165,7 +165,7 @@ class ProcessTab(ttk.Frame):
             text=f"READY: {ready}"
         )
 
-        self.running_label_config(
+        self.running_label.config(
             text=f"RUNNING: {running}"
         )
 

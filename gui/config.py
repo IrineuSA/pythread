@@ -137,6 +137,15 @@ class ConfigFrame(ttk.LabelFrame):
             columnspan=3,
             pady=10
         )
+        self.simulation_button = ttk.Button(
+            self,
+            text="Simular Fila de Prontos",
+            command=self._executar_simulacao
+        )
+        self.simulation_button.pack(
+            side="left",
+            padx=5
+        )
 
     def _selecionar_pasta(self):
         pasta = filedialog.askdirectory()
@@ -191,4 +200,12 @@ class ConfigFrame(ttk.LabelFrame):
             "termo_busca": termo,
             "threads": threads
         }
+
+    def _executar_simulacao(self):
+        if self.on_simulation:
+            config=self.obter_config()
+
+            self.on_simulation(
+                config
+            )
     

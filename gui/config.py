@@ -9,7 +9,8 @@ class ConfigFrame(ttk.LabelFrame):
     def __init__(
         self,
         parent,
-        on_benchmark
+        on_benchmark,
+        on_simulation=None
     ):
         super().__init__(
             parent,
@@ -34,6 +35,7 @@ class ConfigFrame(ttk.LabelFrame):
             "Texto no arquivo": "text"
         }
         self._criar_widgets()
+        self.on_simulation = on_simulation
 
     def _criar_widgets(self):
         self.columnconfigure(

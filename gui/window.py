@@ -9,6 +9,7 @@ from gui.graph import GraphsTab
 from gui.utils import obter_diretorio_app
 
 from gui.process import ProcessTab
+import threading
 class ScannerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -28,7 +29,8 @@ class ScannerApp(tk.Tk):
 
         self.config_frame = ConfigFrame(
             self,
-            on_benchmark=self.executar_benchmark
+            on_benchmark=self.executar_benchmark,
+            on_simulation=self.executar_simulacao
         )
         self.config_frame.pack(
             fill="x",
@@ -77,3 +79,19 @@ class ScannerApp(tk.Tk):
             self.graph_dir,
             on_complete=self.graphs_tab.atualizar
         )
+
+    def executar_simulacao(
+        self,
+        config
+    ):
+        self.process_tab.limpar()
+
+        self.notebook.select(
+            self.process_tab
+        )
+        thread = threading.Thread(
+            target=self._executar_simulacao_thread,
+            args=(config,),
+            daemon=True
+        )
+        thread.start()

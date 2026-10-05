@@ -14,3 +14,5 @@ class Processo:
     pid: int
     arquivo: Path
     estado: EstadoProcesso = EstadoProcesso.NEW
+
+    

@@ -12,7 +12,8 @@ def busca_pasta(
     tipo_busca: str,
     termo_busca: str,
     n_threads: int,
-    max_io: int = None
+    max_io: int = None,
+    processo_callback=None
 ) -> dict:
     arquivos = [
         caminho
@@ -20,7 +21,9 @@ def busca_pasta(
         if caminho.is_file()
     ]
 
-    gerenciador = GerenciadorProcessos()
+    gerenciador = GerenciadorProcessos(
+        callback=processo_callback
+    )
     
     fila_prontos = FilaProntos(
     gerenciador

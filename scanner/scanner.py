@@ -5,6 +5,8 @@ from .process import Processo
 from .ready_queue import FilaProntos
 from .process_manager import GerenciadorProcessos
 
+import threading
+
 def busca_pasta(
     pasta: str,
     tipo_busca: str,
@@ -60,16 +62,18 @@ def busca_pasta(
 def executar_processo(
     fila_prontos,
     tipo_busca,
-    termo_busca
+    termo_busca,
+    semaforo_io
 ):
     processo = fila_prontos.proximo()
 
     try:
-        encontrado = busca_arq(
-            processo.arquivo,
-            tipo_busca,
-            termo_busca
-        )
+        with semaforo_io:
+            encontrado = busca_arq(
+                processo.arquivo,
+                tipo_busca,
+                termo_busca
+            )
         if encontrado:
             return processo.arquivo
 

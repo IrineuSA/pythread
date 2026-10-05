@@ -65,13 +65,15 @@ def executar_processo(
     processo = fila_prontos.proximo()
 
     try:
-        resultado = busca_arq(
+        encontrado = busca_arq(
             processo.arquivo,
             tipo_busca,
             termo_busca
         )
+        if encontrado:
+            return processo.arquivo
 
-        return resultado
+        return None
 
     finally:
         fila_prontos.concluir(processo)

@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from .worker import busca_arq
+from .process import Processo
+from .ready_queue import FilaProntos
 
 def busca_pasta(
     pasta: str,
@@ -14,6 +16,16 @@ def busca_pasta(
         if caminho.is_file()
     ]
 
+    fila_prontos = FilaProntos()
+    for pid, caminho_arq in enumerate(arquivos, start=1):
+        processo = Processo(
+            pid=pid,
+            arquivo=caminho_arq
+        )
+
+        fila_prontos.adicionar(processo)
+
+
     resultado = []
 
     with ThreadPoolExecutor(
@@ -21,21 +33,34 @@ def busca_pasta(
     ) as executor:
         futuros = [
             executor.submit(
-                busca_arq,
-                caminho_arq,
+                executar_processo,
+                fila_prontos,
                 tipo_busca,
                 termo_busca
             )
-            for caminho_arq in arquivos
+            for _ in arquivos
         ]
-        for caminho_arq, futuro in zip(
-            arquivos,
-            futuros
-        ):
-            if futuro.result():
-                resultado.append(caminho_arq)
+        for futuro in futuros:
+            equivalente = futuro.result()
 
-    return {
-        "matches": resultado,
-        "arquivos pesquisados": len(arquivos)
-    }
+            if resultado:
+                resultado.append(equivalente)
+
+def executar_processo(
+    fila_prontos,
+    tipo_busca,
+    termo_busca
+):
+    processo = fila_prontos.proximo()
+
+    try:
+        resultado = busca_arq(
+            processo.arquivo,
+            tipo_busca,
+            termo_busca
+        )
+
+        return resultado
+
+    finally:
+        fila_prontos.concluir(processo)

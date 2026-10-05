@@ -8,6 +8,7 @@ from gui.graph import GraphsTab
 
 from gui.utils import obter_diretorio_app
 
+from gui.process import ProcessTab
 class ScannerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -59,6 +60,15 @@ class ScannerApp(tk.Tk):
         self.notebook.add(
             self.graphs_tab,
             text="Gráficos"
+        )
+
+        self.process_tab = ProcessTab(
+            self.notebook
+        )
+
+        self.notebook.add(
+            self.process_tab,
+            text="Processos"
         )
 
     def executar_benchmark(self, config):

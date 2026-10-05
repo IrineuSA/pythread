@@ -205,9 +205,15 @@ class ConfigFrame(ttk.LabelFrame):
 
     def _executar_simulacao(self):
         if self.on_simulation:
-            config=self.obter_config()
+            try:
+                config=self._obter_config()
 
-            self.on_simulation(
-                config
-            )
+                self.on_simulation(
+                    config
+                )
+            except ValueError as erro:
+                messagebox.showerror(
+                    "erro",
+                    str(erro)
+                )
     

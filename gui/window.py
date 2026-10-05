@@ -9,7 +9,9 @@ from gui.graph import GraphsTab
 from gui.utils import obter_diretorio_app
 
 from gui.process import ProcessTab
+
 import threading
+from scanner.scanner import busca_pasta
 class ScannerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -95,3 +97,17 @@ class ScannerApp(tk.Tk):
             daemon=True
         )
         thread.start()
+    
+    def _executar_simulacao_thread(
+        self,
+        config
+    ):
+        busca_pasta(
+            pasta=config["pasta"],
+            tipo_busca=config["tipo_busca"],
+            termo_busca=config["termo_busca"],
+            n_threads=max(config["threads"]),
+            processo_callback=(
+                self.process_tab.atualizar_processo
+            )
+        )

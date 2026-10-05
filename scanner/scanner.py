@@ -24,6 +24,10 @@ def busca_pasta(
     fila_prontos = FilaProntos(
     gerenciador
     )
+    
+    semaforo_io = threading.Semaphore(
+        n_threads
+    )
 
     for pid, caminho_arq in enumerate(arquivos, start=1):
         processo = Processo(
@@ -44,7 +48,8 @@ def busca_pasta(
                 executar_processo,
                 fila_prontos,
                 tipo_busca,
-                termo_busca
+                termo_busca,
+                semaforo_io
             )
             for _ in arquivos
         ]

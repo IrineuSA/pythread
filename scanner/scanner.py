@@ -3,6 +3,7 @@ from pathlib import Path
 from .worker import busca_arq
 from .process import Processo
 from .ready_queue import FilaProntos
+from .process_manager import GerenciadorProcessos
 
 def busca_pasta(
     pasta: str,
@@ -16,13 +17,18 @@ def busca_pasta(
         if caminho.is_file()
     ]
 
-    fila_prontos = FilaProntos()
+    gerenciador = GerenciadorProcessos()
+    
+    fila_prontos = FilaProntos(
+    gerenciador
+    )
+
     for pid, caminho_arq in enumerate(arquivos, start=1):
         processo = Processo(
             pid=pid,
             arquivo=caminho_arq
         )
-
+        gerenciador.adicionar(processo)
         fila_prontos.adicionar(processo)
 
 
@@ -43,8 +49,13 @@ def busca_pasta(
         for futuro in futuros:
             equivalente = futuro.result()
 
-            if resultado:
+            if equivalente:
                 resultado.append(equivalente)
+    
+    return {
+        "matches": resultado,
+        "arquivos pesquisados": len(arquivos)
+    }
 
 def executar_processo(
     fila_prontos,

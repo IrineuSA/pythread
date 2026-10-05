@@ -18,6 +18,12 @@ class GerenciadorProcessos:
     ):
         with self.lock:
             processo.estado = estado
+        if self.callback:
+            self.callback(
+                processo.pid,
+                processo.arquivo,
+                estado
+            )
 
     def obter_por_estado(
         self,

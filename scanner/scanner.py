@@ -1,7 +1,8 @@
+from scanner.process import EstadoProcesso
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from .worker import busca_arq
-from .process import Processo
+from .process import Processo, EstadoProcesso
 from .ready_queue import FilaProntos
 from .process_manager import GerenciadorProcessos
 
@@ -56,7 +57,8 @@ def busca_pasta(
                 fila_prontos,
                 tipo_busca,
                 termo_busca,
-                semaforo_io
+                semaforo_io,
+                gerenciador
             )
             for _ in arquivos
         ]
@@ -75,21 +77,44 @@ def executar_processo(
     fila_prontos,
     tipo_busca,
     termo_busca,
-    semaforo_io
+    semaforo_io,
+    gerenciador
 ):
     processo = fila_prontos.proximo()
+    getSemaforo = False
 
     try:
-        with semaforo_io:
-            encontrado = busca_arq(
-                processo.arquivo,
-                tipo_busca,
-                termo_busca
+        getSemaforo = semaforo_io.acquire(
+            blocking=False
+        )
+        if not getSemaforo:
+            gerenciador.alterar_estado(
+                processo,
+                EstadoProcesso.WAITING
             )
+        
+        semaforo_io.acquire()
+        getSemaforo=True
+
+        gerenciador.alterar_estado(
+            processo,
+            EstadoProcesso.RUNNING
+        )
+    
+        encontrado = busca_arq(
+            processo.arquivo,
+            tipo_busca,
+            termo_busca
+        )
+
         if encontrado:
             return processo.arquivo
-
+        
         return None
 
     finally:
-        fila_prontos.concluir(processo)
+        if getSemaforo:
+            semaforo_io.release()
+        fila_prontos.concluir(
+            processo
+        )

@@ -139,7 +139,7 @@ class ConfigFrame(ttk.LabelFrame):
         )
         self.simulation_button = ttk.Button(
             self,
-            text="Simular Fila de Prontos",
+            text="Simular Ready Queue",
             command=self._executar_simulacao
         )
         self.simulation_button.grid(

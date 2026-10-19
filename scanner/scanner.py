@@ -63,7 +63,7 @@ def busca_pasta(
                 fila_prontos,
                 tipo_busca,
                 termo_busca,
-                semaforo_io,
+                semaforos_pasta,
                 gerenciador
             )
             for _ in arquivos

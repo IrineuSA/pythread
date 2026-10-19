@@ -92,9 +92,8 @@ def executar_processo(
                 processo,
                 EstadoProcesso.WAITING
             )
-        
-        semaforo_io.acquire()
-        getSemaforo=True
+            semaforo_io.acquire()
+            getSemaforo=True
 
         gerenciador.alterar_estado(
             processo,

@@ -17,7 +17,8 @@ def busca_pasta(
     max_io: int = None,
     processo_callback=None,
     algoritmo: str="FCFS",
-    delay_ms: int = 0
+    delay_ms: int = 0,
+    fila_callback=None
 ) -> dict:
     arquivos = [
         caminho
@@ -30,7 +31,9 @@ def busca_pasta(
     )
     
     fila_prontos = FilaProntos(
-    gerenciador
+    gerenciador,
+    algoritmo=algoritmo,
+    fila_callback=fila_callback
     )
 
     if delay_ms < 0:

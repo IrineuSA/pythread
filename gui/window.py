@@ -110,7 +110,6 @@ class ScannerApp(tk.Tk):
             max_io=config["max_io"],
             algoritmo=config["algoritmo"],
             delay_ms=config["delay_ms"],
-            processo_callback=(
-                self.process_tab.atualizar_processo
-            )
+            processo_callback=self.process_tab.atualizar_processo,
+            fila_callback=self.process_tab.atualizar_fila
         )

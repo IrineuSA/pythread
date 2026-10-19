@@ -212,23 +212,23 @@ class ProcessTab(ttk.Frame):
             text=f"WAITING: {waiting}"
         )
 
-        ready_processes=[
-            pid
-            for pid,processo in self.processos.items()
-            if processo["estado"] == EstadoProcesso.READY
-        ]
-        if ready_processes:
-            primeiros=ready_processes[:15]
-            texto=" -> ".join(
-                f"P{pid}" for pid in primeiros
-            )
-            if len(ready_processes) > 15:
-                texto += f" -> ... ({len(ready_processes)} na fila)"
-        else:
-            texto = "Fila vazia"
-        self.ready_queue_label.config(
-            text=texto
-        )
+#        ready_processes=[
+#            pid
+#            for pid,processo in self.processos.items()
+#            if processo["estado"] == EstadoProcesso.READY
+#        ]
+#        if ready_processes:
+#            primeiros=ready_processes[:15]
+#            texto=" -> ".join(
+#                f"P{pid}" for pid in primeiros
+#            )
+#            if len(ready_processes) > 15:
+#                texto += f" -> ... ({len(ready_processes)} na fila)"
+#        else:
+#            texto = "Fila vazia"
+#        self.ready_queue_label.config(
+#            text=texto
+#        )
 
     def limpar(self):
         self.processos.clear()
@@ -236,3 +236,31 @@ class ProcessTab(ttk.Frame):
         for item in self.tree.get_children():
             self.tree.delete(item)
         self._atualizar_resumo()
+
+    def atualizar_fila(self,pids):
+        self.after(
+            0,
+            self._aplicar_fila,
+            pids
+        )
+        self.ready_queue_label.config(
+            text="Fila vazia"
+        )
+
+    def _aplicar_fila(self, pids):
+        if not pids:
+            texto = "Fila vazia"
+        else:
+            primeiros = pids[:15]
+
+            texto = " → ".join(
+                f"P{pid}"
+                for pid in primeiros
+            )
+
+            if len(pids) > 15:
+                texto += f" → ... ({len(pids)} na fila)"
+
+        self.ready_queue_label.config(
+            text=texto
+        )

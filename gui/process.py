@@ -67,6 +67,7 @@ class ProcessTab(ttk.Frame):
             "ordem",
             "pid",
             "arquivo",
+            "tamanho",
             "estado"
         )
 
@@ -94,6 +95,17 @@ class ProcessTab(ttk.Frame):
         self.tree.heading(
             "ordem",
             text="Ordem"
+        )
+
+        self.tree.heading(
+            "tamanho",
+            text="Tamanho"
+        )
+
+        self.tree.column(
+            "tamanho",
+            width=120,
+            anchor="e"
         )
 
         self.tree.column(
@@ -173,10 +185,17 @@ class ProcessTab(ttk.Frame):
 
         item_id = str(pid)
 
+        try:
+            tamanho = arquivo.stat().st_size
+            tamanho_texto = self.formatar_tamanho(tamanho)
+        except OSError:
+            tamanho_texto = "N/D"
+
         valores = (
             ordem if ordem is not None else "-",
             pid,
             arquivo.name,
+            tamanho_texto,
             estado.value
         )
         if self.tree.exists(item_id):
@@ -192,6 +211,7 @@ class ProcessTab(ttk.Frame):
                 values=valores
             )
         self._atualizar_resumo()
+        self.ordenar_por_despacho()
 
     def _atualizar_resumo(self):
         ready=0
@@ -263,3 +283,36 @@ class ProcessTab(ttk.Frame):
         self.ready_queue_label.config(
             text=texto
         )
+
+    def ordenar_por_despacho(self):
+        itens = self.tree.get_children()
+
+        def chave(item):
+            pid = int(item)
+            ordem = self.processos[pid]["ordem"]
+
+            if ordem is None:
+                return (1,pid)
+            return (0, ordem)
+        
+        itens_ordenados = sorted(
+            itens,
+            key=chave
+        )
+
+        for indice,item in enumerate(itens_ordenados):
+            self.tree.move(
+                item,
+                "",
+                indice
+            )
+
+    @staticmethod
+    def formatar_tamanho(tamanho):
+        if tamanho < 1024:
+            return f"{tamanho} B"
+
+        if tamanho < 1024 ** 2:
+            return f"{tamanho / 1024:.2f} KB"
+
+        return f"{tamanho / (1024 ** 2):.2f} MB"

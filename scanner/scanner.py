@@ -51,8 +51,15 @@ def busca_pasta(
         diretorio: threading.Semaphore(max_io)
         for diretorio in {arquivo.parent for arquivo in arquivos}
     }
+
+    monitor_lock = threading.Lock()
+    operacoes_ativas = {
+        pasta: 0 for pasta in semaforos_pasta
+    }
     
-    
+    maximo_simultaneo = {
+        pasta: 0 for pasta in semaforos_pasta
+    }
 
     for pid, caminho_arq in enumerate(arquivos, start=1):
         processo = Processo(
@@ -76,7 +83,10 @@ def busca_pasta(
                 termo_busca,
                 semaforos_pasta,
                 gerenciador,
-                delay_ms
+                delay_ms,
+                monitor_lock,
+                operacoes_ativas,
+                maximo_simultaneo
             )
             for _ in arquivos
         ]
@@ -85,6 +95,18 @@ def busca_pasta(
 
             if equivalente:
                 resultado.append(equivalente)
+
+    print("\n=== DIAGNOSTICO DE SINCRONIZAÇAO ===")
+    for pasta,maximo in maximo_simultaneo.items():
+        print(
+            f"Pasta: {pasta.name} | "
+            f"Máximo simultaneo: {maximo} | "
+            f"Limite: {max_io}"
+        )
+
+        assert maximo <= max_io, (
+            f"Limite de sincronizacao excedido: {pasta}"
+        )
     
     return {
         "matches": resultado,
@@ -97,7 +119,10 @@ def executar_processo(
     termo_busca,
     semaforos_pasta,
     gerenciador,
-    delay_ms=0
+    delay_ms,
+    monitor_lock,
+    operacoes_ativas,
+    maximo_simultaneo
 ):
     processo = fila_prontos.proximo()
     diretorio = processo.arquivo.parent
@@ -120,6 +145,14 @@ def executar_processo(
             processo,
             EstadoProcesso.RUNNING
         )
+
+        with monitor_lock:
+            operacoes_ativas[diretorio] += 1
+                
+            maximo_simultaneo[diretorio] = max(
+                maximo_simultaneo[diretorio],
+                operacoes_ativas[diretorio]
+            )
     
         encontrado = busca_arq(
             processo.arquivo,
@@ -137,7 +170,9 @@ def executar_processo(
 
     finally:
         if getSemaforo:
+            with monitor_lock:
+                operacoes_ativas[diretorio] -= 1
             semaforo_io.release()
-        fila_prontos.concluir(
-            processo
-        )
+        fila_prontos.concluir(processo)
+    
+ 

@@ -31,10 +31,16 @@ def busca_pasta(
     )
     
     if max_io is None:
-        max_io = n_threads
-    semaforo_io =   threading.Semaphore(
-        max_io
-    )
+        max_io = 1
+    if max_io < 1:
+        raise ValueError(
+            "Limite de I/O deve ser maior que 0"
+        )
+    semaforos_pasta={
+        diretorio: threading.Semaphore(max_io)
+        for diretorio in {arquivo.parent for arquivo in arquivos}
+    }
+    
     
 
     for pid, caminho_arq in enumerate(arquivos, start=1):

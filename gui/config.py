@@ -29,6 +29,9 @@ class ConfigFrame(ttk.LabelFrame):
         self.threads_var = tk.StringVar(
             value="1,2,4,8,16,32,64"
         )
+        self.max_io_var = tk.StringVar(
+            value="1"
+        )
         self.tipo_map = {
             "Nome do arquivo": "filename",
             "Extensão": "extension",
@@ -118,6 +121,24 @@ class ConfigFrame(ttk.LabelFrame):
             sticky="w",
             pady=5
         )
+        ttk.Label(
+            self,
+            text="Limite por pasta (I/O):"
+        ).grid(
+            row=4,
+            column=0,
+            sticky="w",
+            pady=5
+        )
+        ttk.Entry(
+            self,
+            textvariable=self.max_io_var
+        ).grid(
+            row=4,
+            column=1,
+            sticky="ew",
+            pady=5
+        )
         ttk.Entry(
             self,
             textvariable=self.threads_var
@@ -132,7 +153,7 @@ class ConfigFrame(ttk.LabelFrame):
             text="Executar Benchmark",
             command=self._executar
         ).grid(
-            row=4,
+            row=5,
             column=0,
             columnspan=3,
             pady=10
@@ -143,7 +164,7 @@ class ConfigFrame(ttk.LabelFrame):
             command=self._executar_simulacao
         )
         self.simulation_button.grid(
-            row=5,
+            row=6,
             column=0,
             columnspan=3,
             pady=10
@@ -192,6 +213,19 @@ class ConfigFrame(ttk.LabelFrame):
                 "Threads devem ser números "
                 "separados por vírgula."
             )
+        try:
+            max_io=int(
+                self.max_io_var.get()
+            )
+        except ValueError:
+            raise ValueError(
+                "O limite por pasta deve ser um n. inteiro"
+            )
+        
+        if max_io < 1:
+            raise ValueError(
+                "O limite por pasta deve ser maior que 0"
+            )
 
         return {
             "pasta": str(pasta),
@@ -200,7 +234,8 @@ class ConfigFrame(ttk.LabelFrame):
                     self.tipo_var.get()
                 ],
             "termo_busca": termo,
-            "threads": threads
+            "threads": threads,
+            "max_io": max_io
         }
 
     def _executar_simulacao(self):

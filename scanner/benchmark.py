@@ -7,7 +7,8 @@ def benchmark_threads(
     tipo_busca: str,
     termo_busca: str,
     n_threads: list[int],
-    progresso=None
+    progresso=None,
+    max_io: int = 1
 ) -> list[dict]:
 
     resultado = []
@@ -51,7 +52,8 @@ def benchmark_threads(
                 pasta=pasta,
                 tipo_busca=tipo_busca,
                 termo_busca=termo_busca,
-                n_threads=conta_threads
+                n_threads=conta_threads,
+                max_io=max_io
             )
 
             tempo_final = time.perf_counter()

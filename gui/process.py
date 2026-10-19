@@ -12,6 +12,7 @@ class ProcessTab(ttk.Frame):
 
         self.processos = {}
         self._criar_resumo()
+        self._criar_fila()
         self._criar_tabela()
 
     def _criar_resumo(self):
@@ -47,6 +48,16 @@ class ProcessTab(ttk.Frame):
         )
 
         self.terminated_label.pack(
+            side="left",
+            padx=10
+        )
+        
+        self.waiting_label = ttk.Label(
+            frame,
+            text="WAITING: 0"
+        )
+
+        self.waiting_label.pack(
             side="left",
             padx=10
         )
@@ -97,6 +108,26 @@ class ProcessTab(ttk.Frame):
         self.tree.pack(
             fill="both",
             expand=True
+        )
+
+    def _criar_fila(self):
+        frame=ttk.LabelFrame(
+            self,
+            text="Fila de Prontos"
+        )
+        frame.pack(
+            fill="x",
+            pady=(0,10)
+        )
+        self.ready_queue_label=ttk.Label(
+            frame,
+            text="Fila vazia",
+            anchor="w"
+        )
+        self.ready_queue_label.pack(
+            fill="x",
+            padx=10,
+            pady=10
         )
     
     def atualizar_processo(
@@ -149,6 +180,7 @@ class ProcessTab(ttk.Frame):
         ready=0
         running=0
         terminated=0
+        waiting=0
 
         for processo in self.processos.values():
             estado = processo["estado"]
@@ -160,6 +192,9 @@ class ProcessTab(ttk.Frame):
 
             elif estado == EstadoProcesso.TERMINATED:
                 terminated += 1
+            
+            elif estado == EstadoProcesso.WAITING:
+                waiting += 1
 
         self.ready_label.config(
             text=f"READY: {ready}"
@@ -171,6 +206,28 @@ class ProcessTab(ttk.Frame):
 
         self.terminated_label.config(
             text=f"TERMINATED: {terminated}"
+        )
+
+        self.waiting_label.config(
+            text=f"WAITING: {waiting}"
+        )
+
+        ready_processes=[
+            pid
+            for pid,processo in self.processos.items()
+            if processo["estado"] == EstadoProcesso.READY
+        ]
+        if ready_processes:
+            primeiros=ready_processes[:15]
+            texto=" -> ".join(
+                f"P{pid}" for pid in primeiros
+            )
+            if len(ready_processes) > 15:
+                texto += f" -> ... ({len(ready_processes)} na fila)"
+        else:
+            texto = "Fila vazia"
+        self.ready_queue_label.config(
+            text=texto
         )
 
     def limpar(self):

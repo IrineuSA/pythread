@@ -85,6 +85,42 @@ def grafico_tempo(
             run_id
         )
 
+def grafico_tempo_retorno(
+    resultados: list[dict],
+    salvar: bool = False,
+    pasta_saida: str = "graficos",
+    run_id: str = ""
+) -> None:
+
+    threads = [
+        resultado["threads"]
+        for resultado in resultados
+    ]
+
+    tempos_retorno = [
+        resultado["tempo medio retorno"] * 1000
+        for resultado in resultados
+    ]
+
+    plt.figure(figsize=(10,6))
+
+    plt.plot(threads,tempos_retorno,marker="o")
+
+    plt.title("Tempo médio de retorno / Nº de Threads")
+    plt.xlabel("Número de Threads")
+    plt.ylabel("Tempo médio de retorno (ms)")
+
+    plt.xticks(threads)
+    plt.grid(True)
+    plt.tight_layout()
+
+    if salvar:
+        _salvar_grafico(
+            pasta_saida,
+            "tempo_retorno.png",
+            run_id
+        )
+
 def grafico_performance_relativa(
     resultados: list[dict],
     salvar: bool = False,
@@ -176,6 +212,13 @@ def gerar_graficos(
     )
 
     grafico_performance_relativa(
+        resultados,
+        salvar,
+        pasta_saida,
+        run_id
+    )
+
+    grafico_tempo_retorno(
         resultados,
         salvar,
         pasta_saida,

@@ -73,7 +73,8 @@ class BenchmarkTab(ttk.Frame):
             "tempo",
             "arquivos",
             "encontrados",
-            "throughput"
+            "throughput",
+            "retorno"
         )
 
         self.tree = ttk.Treeview(
@@ -100,6 +101,15 @@ class BenchmarkTab(ttk.Frame):
         self.tree.heading(
             "throughput",
             text="Arquivos/s"
+        )
+        self.tree.heading(
+            "retorno",
+            text="Retorno médio (ms)"
+        )
+        self.tree.column(
+            "retorno",
+            width=150,
+            anchor="center"
         )
         self.tree.pack(
             fill="both",
@@ -247,13 +257,10 @@ class BenchmarkTab(ttk.Frame):
                     values=(
                         resultado["threads"],
                         f"{resultado['tempo']:.4f}",
-                        resultado[
-                            "arquivos escaneados"
-                        ],
-                        resultado[
-                            "equivalentes"
-                        ],
+                        resultado["arquivos escaneados"],
+                        resultado["equivalentes"],
                         f"{resultado['arquivos por segundo']:.2f}"
+                        f"{resultado['tempo medio retorno'] * 1000:.3f}"
                     ),
                     tags=tag
                 )

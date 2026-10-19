@@ -96,6 +96,23 @@ def busca_pasta(
             if equivalente:
                 resultado.append(equivalente)
 
+    processos = gerenciador.obter_todos()
+    tempos_retorno = [
+        processo.tempo_conclusao - processo.tempo_chegada
+        for processo in processos
+        if (
+            processo.tempo_chegada is not None
+            and processo.tempo_conclusao is not None
+        )
+    ]
+
+    if tempos_retorno:
+        tempo_medio_retorno = (
+            sum(tempos_retorno) / len(tempos_retorno)
+        )
+    else:
+        tempo_medio_retorno = 0.0
+
     print("\n=== DIAGNOSTICO DE SINCRONIZAÇAO ===")
     for pasta,maximo in maximo_simultaneo.items():
         print(
@@ -107,10 +124,16 @@ def busca_pasta(
         assert maximo <= max_io, (
             f"Limite de sincronizacao excedido: {pasta}"
         )
+
+    print(
+        "Tempo medio de retorno: "
+        f"{tempo_medio_retorno * 1000:.3f} ms"
+    )
     
     return {
         "matches": resultado,
-        "arquivos pesquisados": len(arquivos)
+        "arquivos pesquisados": len(arquivos),
+        "tempo medio retorno": tempo_medio_retorno
     }
 
 def executar_processo(

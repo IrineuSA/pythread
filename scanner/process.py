@@ -16,5 +16,7 @@ class Processo:
     arquivo: Path
     estado: EstadoProcesso = EstadoProcesso.NEW
     ordem_despacho: int | None = None
+    tempo_chegada: float | None = None
+    tempo_conclusao: float | None = None
 
     

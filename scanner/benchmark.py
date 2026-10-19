@@ -28,6 +28,7 @@ def benchmark_threads(
 
         tempos = []
         velocidades = []
+        tempos_retorno = []
 
         equivalencia = None
 
@@ -58,6 +59,10 @@ def benchmark_threads(
                 algoritmo=algoritmo
             )
 
+            tempos_retorno.append(
+                equivalencia["tempo medio retorno"]
+            )
+
             tempo_final = time.perf_counter()
 
             tempo_tot = tempo_final - tempo_inicial
@@ -79,6 +84,10 @@ def benchmark_threads(
             teste_atual += 1
 
         tempo_medio = sum(tempos) / repeticoes
+        
+        tempo_medio_retorno = (
+            sum(tempos_retorno) / len(tempos_retorno)
+        )
 
         velocidade_media = (
             sum(velocidades) / repeticoes
@@ -94,12 +103,14 @@ def benchmark_threads(
             "arquivos escaneados": arq_escaneados,
             "equivalentes": n_equivalentes,
             "arquivos por segundo": velocidade_media,
-            "matches": equivalencia["matches"]
+            "matches": equivalencia["matches"],
+            "tempo medio retorno": tempo_medio_retorno
         })
 
         print(
             f"\nResultado médio para "
             f"{conta_threads} thread(s):"
+            f"Retorno médio: {tempo_medio_retorno * 1000:.3f} ms"
         )
 
         print(

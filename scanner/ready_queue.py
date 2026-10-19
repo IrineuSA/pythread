@@ -2,6 +2,7 @@ from queue import Queue, PriorityQueue
 from .process import Processo, EstadoProcesso
 
 import threading
+import time
 
 class FilaProntos:
     def __init__(self,gerenciador,algoritmo="FCFS",fila_callback=None):
@@ -20,6 +21,7 @@ class FilaProntos:
             self.fila=PriorityQueue()
 
     def adicionar(self, processo: Processo):
+        processo.tempo_chegada = time.perf_counter()
         self.gerenciador.alterar_estado(
             processo,
             EstadoProcesso.READY
@@ -52,6 +54,7 @@ class FilaProntos:
         return processo
 
     def concluir(self, processo: Processo):
+        processo.tempo_conclusao = time.perf_counter()
         self.gerenciador.alterar_estado(
             processo,
             EstadoProcesso.TERMINATED

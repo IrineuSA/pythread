@@ -64,6 +64,7 @@ class ProcessTab(ttk.Frame):
 
     def _criar_tabela(self):
         colunas = (
+            "ordem",
             "pid",
             "arquivo",
             "estado"
@@ -88,6 +89,17 @@ class ProcessTab(ttk.Frame):
         self.tree.heading(
             "estado",
             text="Estado"
+        )
+
+        self.tree.heading(
+            "ordem",
+            text="Ordem"
+        )
+
+        self.tree.column(
+            "ordem",
+            width=80,
+            anchor="center"
         )
 
         self.tree.column(
@@ -134,30 +146,35 @@ class ProcessTab(ttk.Frame):
         self,
         pid,
         arquivo,
-        estado
+        estado,
+        ordem
     ):
         self.after(
             0,
             self._aplicar_atualizacao,
             pid,
             arquivo,
-            estado
+            estado,
+            ordem
         )
     
     def _aplicar_atualizacao(
         self,
         pid,
         arquivo,
-        estado
+        estado,
+        ordem
     ):
         self.processos[pid] = {
             "arquivo": arquivo,
-            "estado": estado
+            "estado": estado,
+            "ordem": ordem
         }
 
         item_id = str(pid)
 
         valores = (
+            ordem if ordem is not None else "-",
             pid,
             arquivo.name,
             estado.value
@@ -211,24 +228,6 @@ class ProcessTab(ttk.Frame):
         self.waiting_label.config(
             text=f"WAITING: {waiting}"
         )
-
-#        ready_processes=[
-#            pid
-#            for pid,processo in self.processos.items()
-#            if processo["estado"] == EstadoProcesso.READY
-#        ]
-#        if ready_processes:
-#            primeiros=ready_processes[:15]
-#            texto=" -> ".join(
-#                f"P{pid}" for pid in primeiros
-#            )
-#            if len(ready_processes) > 15:
-#                texto += f" -> ... ({len(ready_processes)} na fila)"
-#        else:
-#            texto = "Fila vazia"
-#        self.ready_queue_label.config(
-#            text=texto
-#        )
 
     def limpar(self):
         self.processos.clear()

@@ -1,6 +1,8 @@
 from queue import Queue, PriorityQueue
 from .process import Processo, EstadoProcesso
 
+import threading
+
 class FilaProntos:
     def __init__(self,gerenciador,algoritmo="FCFS",fila_callback=None):
         if algoritmo not in ("FCFS", "SJF"):
@@ -9,6 +11,8 @@ class FilaProntos:
             )
         self.algoritmo=algoritmo
         self.gerenciador=gerenciador
+        self.contador_despacho = 0
+        self.lock_despacho = threading.Lock()
         self.fila_callback = fila_callback
         if algoritmo == "FCFS":
             self.fila=Queue()
@@ -30,15 +34,21 @@ class FilaProntos:
         self.notificar_fila()
 
     def proximo(self) -> Processo:
-        if self.algoritmo=="FCFS":
-            processo = self.fila.get()
-        else:
-            _,_,processo=self.fila.get()
+        with self.lock_despacho:
+            if self.algoritmo=="FCFS":
+                processo = self.fila.get()
+            else:
+                _,_,processo=self.fila.get()
+            
+            self.contador_despacho += 1
+            processo.ordem_despacho = self.contador_despacho
+        
         self.notificar_fila()
         self.gerenciador.alterar_estado(
             processo,
             EstadoProcesso.RUNNING
         )
+        
         return processo
 
     def concluir(self, processo: Processo):

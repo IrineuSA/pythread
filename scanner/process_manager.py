@@ -22,7 +22,8 @@ class GerenciadorProcessos:
             self.callback(
                 processo.pid,
                 processo.arquivo,
-                estado
+                estado,
+                processo.ordem_despacho
             )
 
     def obter_por_estado(

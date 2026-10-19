@@ -83,10 +83,12 @@ def executar_processo(
     fila_prontos,
     tipo_busca,
     termo_busca,
-    semaforo_io,
+    semaforos_pasta,
     gerenciador
 ):
     processo = fila_prontos.proximo()
+    diretorio = processo.arquivo.parent
+    semaforo_io = semaforos_pasta[diretorio]
     getSemaforo = False
 
     try:

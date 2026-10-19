@@ -8,7 +8,8 @@ def benchmark_threads(
     termo_busca: str,
     n_threads: list[int],
     progresso=None,
-    max_io: int = 1
+    max_io: int = 1,
+    algoritmo: str = "FCFS"
 ) -> list[dict]:
 
     resultado = []
@@ -53,7 +54,8 @@ def benchmark_threads(
                 tipo_busca=tipo_busca,
                 termo_busca=termo_busca,
                 n_threads=conta_threads,
-                max_io=max_io
+                max_io=max_io,
+                algoritmo=algoritmo
             )
 
             tempo_final = time.perf_counter()

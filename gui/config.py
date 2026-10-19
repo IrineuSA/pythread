@@ -37,6 +37,7 @@ class ConfigFrame(ttk.LabelFrame):
             "Extensão": "extension",
             "Texto no arquivo": "text"
         }
+        self.algoritmo_var = tk.StringVar(value="FCFS")
         self._criar_widgets()
         self.on_simulation = on_simulation
 
@@ -153,7 +154,7 @@ class ConfigFrame(ttk.LabelFrame):
             text="Executar Benchmark",
             command=self._executar
         ).grid(
-            row=5,
+            row=6,
             column=0,
             columnspan=3,
             pady=10
@@ -164,10 +165,31 @@ class ConfigFrame(ttk.LabelFrame):
             command=self._executar_simulacao
         )
         self.simulation_button.grid(
-            row=6,
+            row=7,
             column=0,
             columnspan=3,
             pady=10
+        )
+        ttk.Label(
+            self,
+            text="Algoritmo de escalonamento:"
+        ).grid(
+            row=5,
+            column=0,
+            sticky="w",
+            pady=5
+        )
+        self.algoritmo_combo=ttk.Combobox(
+            self,
+            textvariable=self.algoritmo_var,
+            values=("FCFS", "SJF"),
+            state="readonly"
+        )
+        self.algoritmo_combo.grid(
+            row=5,
+            column=1,
+            sticky="ew",
+            pady=5
         )
 
     def _selecionar_pasta(self):
@@ -235,7 +257,8 @@ class ConfigFrame(ttk.LabelFrame):
                 ],
             "termo_busca": termo,
             "threads": threads,
-            "max_io": max_io
+            "max_io": max_io,
+            "algoritmo": self.algoritmo_var.get()
         }
 
     def _executar_simulacao(self):

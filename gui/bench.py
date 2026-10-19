@@ -174,7 +174,8 @@ class BenchmarkTab(ttk.Frame):
                 termo_busca=config["termo_busca"],
                 n_threads=config["threads"],
                 progresso=self._atualizar_progresso,
-                max_io=config["max_io"]
+                max_io=config["max_io"],
+                algoritmo=config["algoritmo"]
             )
 
             self._atualizar_progresso(

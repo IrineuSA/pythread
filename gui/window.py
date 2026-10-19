@@ -108,6 +108,7 @@ class ScannerApp(tk.Tk):
             termo_busca=config["termo_busca"],
             n_threads=max(config["threads"]),
             max_io=config["max_io"],
+            algoritmo=config["algoritmo"],
             processo_callback=(
                 self.process_tab.atualizar_processo
             )

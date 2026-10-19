@@ -2,9 +2,14 @@ from queue import Queue
 from .process import Processo, EstadoProcesso
 
 class FilaProntos:
-    def __init__(self,gerenciador):
-        self.fila = Queue()
-        self.gerenciador = gerenciador
+    def __init__(self,gerenciador,algoritmo="FCFS"):
+        if algoritmo != "FCFS":
+            raise ValueError(
+                f"Algoritmo não suportado: {algoritmo}"
+            )
+        self.algoritmo=algoritmo
+        self.fila=Queue()
+        self.gerenciador=gerenciador
 
     def adicionar(self, processo: Processo):
         self.gerenciador.alterar_estado(

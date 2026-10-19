@@ -14,7 +14,8 @@ def busca_pasta(
     termo_busca: str,
     n_threads: int,
     max_io: int = None,
-    processo_callback=None
+    processo_callback=None,
+    algoritmo: str="FCFS"
 ) -> dict:
     arquivos = [
         caminho

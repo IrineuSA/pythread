@@ -7,6 +7,7 @@ from .ready_queue import FilaProntos
 from .process_manager import GerenciadorProcessos
 
 import threading
+import time
 
 def busca_pasta(
     pasta: str,
@@ -15,7 +16,8 @@ def busca_pasta(
     n_threads: int,
     max_io: int = None,
     processo_callback=None,
-    algoritmo: str="FCFS"
+    algoritmo: str="FCFS",
+    delay_ms: int = 0
 ) -> dict:
     arquivos = [
         caminho
@@ -30,6 +32,11 @@ def busca_pasta(
     fila_prontos = FilaProntos(
     gerenciador
     )
+
+    if delay_ms < 0:
+        raise ValueError(
+            "Atraso na simulaçao não pode ser negativo"
+        )
     
     if max_io is None:
         max_io = 1
@@ -65,7 +72,8 @@ def busca_pasta(
                 tipo_busca,
                 termo_busca,
                 semaforos_pasta,
-                gerenciador
+                gerenciador,
+                delay_ms
             )
             for _ in arquivos
         ]
@@ -85,7 +93,8 @@ def executar_processo(
     tipo_busca,
     termo_busca,
     semaforos_pasta,
-    gerenciador
+    gerenciador,
+    delay_ms=0
 ):
     processo = fila_prontos.proximo()
     diretorio = processo.arquivo.parent
@@ -114,6 +123,9 @@ def executar_processo(
             tipo_busca,
             termo_busca
         )
+
+        if delay_ms > 0:
+            time.sleep(delay_ms/1000)
 
         if encontrado:
             return processo.arquivo

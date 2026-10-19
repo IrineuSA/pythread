@@ -38,6 +38,7 @@ class ConfigFrame(ttk.LabelFrame):
             "Texto no arquivo": "text"
         }
         self.algoritmo_var = tk.StringVar(value="FCFS")
+        self.delay_var = tk.IntVar(value=300)
         self._criar_widgets()
         self.on_simulation = on_simulation
 
@@ -154,7 +155,7 @@ class ConfigFrame(ttk.LabelFrame):
             text="Executar Benchmark",
             command=self._executar
         ).grid(
-            row=6,
+            row=7,
             column=0,
             columnspan=3,
             pady=10
@@ -165,7 +166,7 @@ class ConfigFrame(ttk.LabelFrame):
             command=self._executar_simulacao
         )
         self.simulation_button.grid(
-            row=7,
+            row=8,
             column=0,
             columnspan=3,
             pady=10
@@ -187,6 +188,27 @@ class ConfigFrame(ttk.LabelFrame):
         )
         self.algoritmo_combo.grid(
             row=5,
+            column=1,
+            sticky="ew",
+            pady=5
+        )
+        ttk.Label(
+            self,
+            text="Atraso da simulação (ms):"
+        ).grid(
+            row=6,
+            column=0,
+            sticky="w",
+            pady=5
+        )
+        ttk.Scale(
+            self,
+            from_=0,
+            to=2000,
+            orient="horizontal",
+            variable=self.delay_var
+        ).grid(
+            row=6,
             column=1,
             sticky="ew",
             pady=5
@@ -258,7 +280,8 @@ class ConfigFrame(ttk.LabelFrame):
             "termo_busca": termo,
             "threads": threads,
             "max_io": max_io,
-            "algoritmo": self.algoritmo_var.get()
+            "algoritmo": self.algoritmo_var.get(),
+            "delay_ms": self.delay_var.get()
         }
 
     def _executar_simulacao(self):

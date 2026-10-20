@@ -259,7 +259,7 @@ class BenchmarkTab(ttk.Frame):
                         f"{resultado['tempo']:.4f}",
                         resultado["arquivos escaneados"],
                         resultado["equivalentes"],
-                        f"{resultado['arquivos por segundo']:.2f}"
+                        f"{resultado['arquivos por segundo']:.2f}",
                         f"{resultado['tempo medio retorno'] * 1000:.3f}"
                     ),
                     tags=tag

@@ -10,7 +10,8 @@ class ConfigFrame(ttk.LabelFrame):
         self,
         parent,
         on_benchmark,
-        on_simulation=None
+        on_simulation=None,
+        on_comparison=None
     ):
         super().__init__(
             parent,
@@ -41,6 +42,7 @@ class ConfigFrame(ttk.LabelFrame):
         self.delay_var = tk.IntVar(value=300)
         self._criar_widgets()
         self.on_simulation = on_simulation
+        self.on_comparison = on_comparison
 
     def _criar_widgets(self):
         self.columnconfigure(
@@ -165,6 +167,18 @@ class ConfigFrame(ttk.LabelFrame):
             text="Simular Ready Queue",
             command=self._executar_simulacao
         )
+        self.comparison_button = ttk.Button(
+            self,
+            text="Comparar FCFS x SJF",
+            command=self._executar_comparacao
+        )
+        self.comparison_button.grid(
+            row=9,
+            column=0,
+            columnspan=3,
+            pady=10
+        )
+
         self.simulation_button.grid(
             row=8,
             column=0,
@@ -295,6 +309,17 @@ class ConfigFrame(ttk.LabelFrame):
             except ValueError as erro:
                 messagebox.showerror(
                     "erro",
+                    str(erro)
+                )
+
+    def _executar_comparacao(self):
+        if self.on_comparison:
+            try:
+                config = self._obter_config()
+                self.on_comparison(config)
+            except ValueError as erro:
+                messagebox.showerror(
+                    "Erro",
                     str(erro)
                 )
     

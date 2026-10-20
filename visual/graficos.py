@@ -253,3 +253,74 @@ def _salvar_grafico(
         pasta / novo_nome,
         dpi=300
     )
+
+def grafico_comparativo(
+    resultados: dict,
+    salvar: bool = False,
+    pasta_saida: str = "graficos",
+    run_id: str = ""
+) -> None:
+
+    resultados_fcfs = sorted(
+        resultados["FCFS"],
+        key=lambda r: r["threads"]
+    )
+
+    resultados_sjf = sorted(
+        resultados["SJF"],
+        key=lambda r: r["threads"]
+    )
+
+    threads_fcfs = [
+        r["threads"] for r in resultados_fcfs
+    ]
+
+    threads_sjf = [
+        r["threads"] for r in resultados_sjf
+    ]
+
+    retorno_fcfs = [
+        r["tempo medio retorno"] * 1000
+        for r in resultados_fcfs
+    ]
+
+    retorno_sjf = [
+        r["tempo medio retorno"] * 1000
+        for r in resultados_sjf
+    ]
+
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(
+        threads_fcfs,
+        retorno_fcfs,
+        marker="o",
+        label="FCFS"
+    )
+
+    plt.plot(
+        threads_sjf,
+        retorno_sjf,
+        marker="s",
+        label="SJF"
+    )
+
+    plt.title("Comparação FCFS vs SJF")
+
+    plt.xlabel("Número de Threads")
+    plt.ylabel("Tempo Médio de Retorno (ms)")
+
+    plt.xticks(
+        sorted(set(threads_fcfs + threads_sjf))
+    )
+
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+
+    if salvar:
+        _salvar_grafico(
+            pasta_saida,
+            "comparativo_fcfs_sjf.png",
+            run_id
+        )

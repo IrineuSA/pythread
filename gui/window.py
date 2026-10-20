@@ -12,6 +12,10 @@ from gui.process import ProcessTab
 
 import threading
 from scanner.scanner import busca_pasta
+
+from tkinter import messagebox
+from scanner.benchmark import benchmark_comparativo
+from visual.graficos import grafico_comparativo
 class ScannerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -32,7 +36,8 @@ class ScannerApp(tk.Tk):
         self.config_frame = ConfigFrame(
             self,
             on_benchmark=self.executar_benchmark,
-            on_simulation=self.executar_simulacao
+            on_simulation=self.executar_simulacao,
+            on_comparison=self.executar_comparacao
         )
         self.config_frame.pack(
             fill="x",
@@ -112,4 +117,63 @@ class ScannerApp(tk.Tk):
             delay_ms=config["delay_ms"],
             processo_callback=self.process_tab.atualizar_processo,
             fila_callback=self.process_tab.atualizar_fila
+        )
+    
+    def executar_comparacao(self,config):
+        self.notebook.select(
+            self.benchmark_tab
+        )
+        self.benchmark_tab.status_label.config(
+            text="Comparando FCFS e SJF..."
+        )
+        thread = threading.Thread(
+            target=self._executar_comparacao_thread,
+            args=(config,),
+            daemon=True
+        )
+        thread.start()
+
+    def _executar_comparacao_thread(self, config):
+        try:
+            resultados = benchmark_comparativo(
+                pasta=config["pasta"],
+                tipo_busca=config["tipo_busca"],
+                termo_busca=config["termo_busca"],
+                n_threads=config["threads"],
+                max_io=config["max_io"]
+            )
+
+            grafico_comparativo(
+                resultados,
+                salvar=True,
+                pasta_saida=str(self.graph_dir),
+                run_id="comparacao"
+            )
+
+            self.after(
+                0,
+                self._comparacao_concluida
+            )
+
+        except Exception as erro:
+            self.after(
+                0,
+                lambda erro=erro: messagebox.showerror(
+                    "Erro na comparação",
+                    str(erro)
+                )
+            )
+    
+    def _comparacao_concluida(self):
+        self.graphs_tab.atualizar()
+        self.benchmark_tab.status_label.config(
+        text="Comparação FCFS × SJF concluída."
+        )
+        self.notebook.select(
+            self.graphs_tab
+        )
+
+        messagebox.showinfo(
+            "Comparação concluída",
+            "Gráfico comparativo gerado com sucesso."
         )

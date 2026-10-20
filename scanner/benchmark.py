@@ -133,6 +133,34 @@ def benchmark_threads(
 
     return resultado
 
+def benchmark_comparativo(
+    pasta: str,
+    tipo_busca: str,
+    termo_busca: str,
+    n_threads: list[int],
+    max_io: int = 1
+) -> dict:
+
+    resultados_fcfs = benchmark_threads(
+        pasta=pasta,
+        tipo_busca=tipo_busca,
+        termo_busca=termo_busca,
+        n_threads=n_threads,
+        max_io=max_io,
+        algoritmo="FCFS"
+    )
+    resultados_sjf = benchmark_threads(
+        pasta=pasta,
+        tipo_busca=tipo_busca,
+        termo_busca=termo_busca,
+        n_threads=n_threads,
+        max_io=max_io,
+        algoritmo="SJF"
+    )      
+    return {
+        "FCFS": resultados_fcfs,
+        "SJF": resultados_sjf
+    }
 
 def conta_arqs(folder: str) -> int:
 

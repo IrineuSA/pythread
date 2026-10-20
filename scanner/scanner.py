@@ -50,7 +50,7 @@ def busca_pasta(
     semaforos_pasta={
         diretorio: threading.Semaphore(max_io)
         for diretorio in {arquivo.parent for arquivo in arquivos}
-    }
+    } 
 
     monitor_lock = threading.Lock()
     operacoes_ativas = {
